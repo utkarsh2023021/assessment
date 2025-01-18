@@ -1,0 +1,242 @@
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  transition: background 0.3s ease;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 900;
+  font-size: 2.5rem;
+  color: #1089d3;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  max-width: 900px;
+  background: linear-gradient(135deg, #ffffff, #f3f5fa);
+  border-radius: 20px;
+  padding: 30px 40px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05);
+  margin: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2), 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+input, select {
+  width: 100%;
+  background: #ffffff;
+  padding: 15px;
+  border: none;
+  border-radius: 20px;
+  margin: 10px 0;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), inset 0 -3px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border: 2px solid #12b1d1;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2), inset 0 -4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02);
+}
+
+button {
+  width: 100%;
+  font-weight: bold;
+  background: linear-gradient(45deg, #1089d3 0%, #12b1d1 100%);
+  color: white;
+  padding: 15px 0;
+  border-radius: 20px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+button:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Leaderboard Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+table:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.3s ease;
+}
+
+th {
+  background: #1089d3;
+  color: white;
+  font-size: 1rem;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+tr:hover {
+  background: #f1f5f9;
+  transform: translateX(2px);
+}
+
+tr.rank-up {
+  background-color: #8bc34a;
+  color: white;
+}
+
+tr.rank-down {
+  background-color: #f44336;
+  color: white;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #ffffff, #f3f5fa);
+  padding: 30px;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content:hover {
+  transform: scale(1);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #1089d3;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+.modal-content button:focus {
+  outline: none;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0) scale(1);
+    filter: brightness(1);
+   
+  }
+  25% {
+    transform: translateX(-10px) scale(1.1);
+    filter: brightness(1.2); 
+  }
+  50% {
+    transform: translateX(10px) scale(1);
+    filter: brightness(1.2); 
+  }
+  75% {
+    transform: translateX(-10px) scale(1.1);
+    filter: brightness(1.2); 
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    filter: brightness(1); 
+  }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+
+
+
+@media (max-width: 768px) {
+  input, select, button {
+    width: 100%;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+}
