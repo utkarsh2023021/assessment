@@ -1,75 +1,75 @@
 import './App.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Slide } from 'react-toastify';
 
 function App() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [users, setUsers] = useState([]);
   const [newUserName, setNewUserName] = useState('');
-  const [prevRanks, setPrevRanks] = useState({});
   const [claimHistory, setClaimHistory] = useState([]);
   const [userClaimHistory, setUserClaimHistory] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [shakingUserId, setShakingUserId] = useState(null);
 
   useEffect(() => {
-    fetchUsers();
+    const fetchData = async () => {
+      try {
+        const usersRes = await axios.get('https://assessment-backend-hazel.vercel.app/users');
+        const sortedUsers = usersRes.data.sort((a, b) => b.totalPoints - a.totalPoints);
+        setUsers(sortedUsers);
+
+        const historyRes = await axios.get('https://assessment-backend-hazel.vercel.app/claim-history');
+        setClaimHistory(historyRes.data);
+      } catch (err) {
+        console.error('Error fetching users:', err.message);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/users');
-      const sortedUsers = res.data.sort((a, b) => b.totalPoints - a.totalPoints);
-      const rankChanges = {};
-      sortedUsers.forEach((user, index) => {
-        if (prevRanks[user._id] !== undefined) {
-          rankChanges[user._id] = prevRanks[user._id] - index - 1;
-        }
-      });
-      setPrevRanks(rankChanges);
-      setUsers(sortedUsers);
-
-      const historyRes = await axios.get('http://localhost:5000/claim-history');
-      setClaimHistory(historyRes.data);
-    } catch (err) {
-      console.error('Error fetching users:', err.message);
-    }
-  };
-
   const claimPoints = async (event) => {
-    if (!selectedUserId) return alert('Please select a user first');
+    if (!selectedUserId) return toast.error('Please select a user first', { className: 'toastify error' });
     try {
-      const res = await axios.post('http://localhost:5000/claim-points', { userId: selectedUserId });
+      const res = await axios.post('https://assessment-backend-hazel.vercel.app/claim-points', { userId: selectedUserId });
       const claimedPoints = res.data.claimedPoints;
 
-     
       const btn = event.target.getBoundingClientRect();
       addPointsAnimation(claimedPoints, btn.left + btn.width / 2, btn.top);
 
       setShakingUserId(selectedUserId);
-      alert(`Claimed ${claimedPoints} points!`);
-      fetchUsers();
+      toast.success(`🎉 Claimed ${claimedPoints} points!`, { className: 'toastify success' });
 
-    
+      const usersRes = await axios.get('https://assessment-backend-hazel.vercel.app/users');
+      const sortedUsers = usersRes.data.sort((a, b) => b.totalPoints - a.totalPoints);
+      setUsers(sortedUsers);
+
       setTimeout(() => {
         setShakingUserId(null);
-      }, 500); 
+      }, 500);
     } catch (err) {
       console.error('Error claiming points:', err.message);
     }
   };
 
   const addUser = async () => {
-    if (!newUserName.trim()) return alert('Enter a valid name');
+    if (!newUserName.trim()) return toast.error('Enter a valid name', { className: 'toastify error' });
     if (users.some((user) => user.name.toLowerCase() === newUserName.toLowerCase())) {
-      alert('User already exists!');
+      toast.warning('User already exists!', { className: 'toastify warning' });
       return;
     }
     try {
-      const res = await axios.post('http://localhost:5000/users', { name: newUserName });
+      const res = await axios.post('https://assessment-backend-hazel.vercel.app/users', { name: newUserName });
       setUsers([...users, res.data]);
       setNewUserName('');
-      fetchUsers();
+      toast.success(`✅ User "${res.data.name}" added successfully!`, { className: 'toastify success' });
+
+      const usersRes = await axios.get('https://assessment-backend-hazel.vercel.app/users');
+      const sortedUsers = usersRes.data.sort((a, b) => b.totalPoints - a.totalPoints);
+      setUsers(sortedUsers);
     } catch (err) {
       console.error('Error adding user:', err.message);
     }
@@ -105,6 +105,26 @@ function App() {
   return (
     <div className="app-container">
       <div className="container">
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar
+          closeOnClick
+          draggable
+          transition={Slide}
+          toastClassName="custom-toast"
+          bodyClassName="custom-toast-body"
+          closeButton={
+            <button
+              className="custom-toast-close"
+              aria-label="Close notification"
+              onClick={() => toast.dismiss()}
+            >
+              &times;
+            </button>
+          }
+        />
+
         <h1 className="heading">Leaderboard App</h1>
 
         <div className="form">
@@ -144,31 +164,20 @@ function App() {
                 <th>Rank</th>
                 <th>Name</th>
                 <th>Points</th>
-                <th>Rank Change</th>
               </tr>
             </thead>
             <tbody>
-              {users.slice(0, 10).map((user, index) => {
-                const rankChange = prevRanks[user._id] - (index + 1);
-                return (
-                  <tr
-                    key={user._id}
-                    className={`${
-                      shakingUserId === user._id ? 'shake' : ''
-                    } ${rankChange > 0 ? 'rank-up' : rankChange < 0 ? 'rank-down' : ''}`}
-                    onClick={() => showUserClaimHistory(user._id)}
-                  >
-                    <td>{index + 1}</td>
-                    <td>{user.name}</td>
-                    <td>{user.totalPoints}</td>
-                    <td>
-                      {rankChange > 0 && `⬆️ +${rankChange}`}
-                      {rankChange < 0 && `⬇️ ${Math.abs(rankChange)}`}
-                      {rankChange === 0 && '—'}
-                    </td>
-                  </tr>
-                );
-              })}
+              {users.slice(0, 10).map((user, index) => (
+                <tr
+                  key={user._id}
+                  className={`${shakingUserId === user._id ? 'shake' : ''}`}
+                  onClick={() => showUserClaimHistory(user._id)}
+                >
+                  <td>{index + 1}</td>
+                  <td>{user.name}</td>
+                  <td>{user.totalPoints}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
