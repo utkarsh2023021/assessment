@@ -1,4 +1,3 @@
-
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -7,7 +6,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  background: linear-gradient(135deg, #fcf9f9, #515355);
   transition: background 0.3s ease;
 }
 
@@ -22,12 +21,17 @@ h1 {
 
 .container {
   max-width: 900px;
-  background: linear-gradient(135deg, #ffffff, #f3f5fa);
+  background: linear-gradient(135deg, #ffffff, #595a5c);
+  border: 2px solid transparent;
+  filter: brightness(0.9) contrast(1.5);
   border-radius: 20px;
   padding: 30px 40px;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05);
-  margin: 20px;
+  
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  text-align: center; /* Center content inside container */
+  padding: 30px 30px;
 }
 
 .container:hover {
@@ -35,16 +39,16 @@ h1 {
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2), 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-
 input, select {
-  width: 100%;
-  background: #ffffff;
+  width: 80%; /* Reduced width for better alignment */
+  background: #eee8e8;
   padding: 15px;
   border: none;
   border-radius: 20px;
   margin: 10px 0;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), inset 0 -3px 5px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus {
@@ -55,9 +59,10 @@ input:focus, select:focus {
 }
 
 button {
-  width: 100%;
+  width: 80%; /* Reduced width for better alignment */
   font-weight: bold;
-  background: linear-gradient(45deg, #1089d3 0%, #12b1d1 100%);
+  background: linear-gradient(45deg, #e3e6e8 0%, #6eadbb 100%);
+  border: 2px solid transparent;
   color: white;
   padding: 15px 0;
   border-radius: 20px;
@@ -85,7 +90,7 @@ button:disabled {
 
 /* Leaderboard Styles */
 table {
-  width: 100%;
+  width: 80%; /* Reduced width for better alignment */
   border-collapse: collapse;
   margin: 20px 0;
   background: white;
@@ -93,6 +98,8 @@ table {
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-left: auto;
+  margin-right: auto; /* Center table */
 }
 
 table:hover {
@@ -129,93 +136,141 @@ tr.rank-down {
   color: white;
 }
 
+/* Modal Overlay */
+.modal-content {
+  max-width: 90%;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: white;
+}
 
 .modal-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.modal-content {
-  background: linear-gradient(135deg, #ffffff, #f3f5fa);
-  padding: 30px;
-  border-radius: 20px;
-  width: 80%;
-  max-width: 600px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
-  position: relative;
-  text-align: center;
-  transform: scale(0.95);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.modal-content:hover {
-  transform: scale(1);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.25);
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  color: #1089d3;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content button {
-  padding: 10px 20px;
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
   font-size: 16px;
-  background-color: #007bff;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .leaderboard th, .leaderboard td {
+    font-size: 12px;
+  }
+}
+
+.toast-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast-center {
+  margin: 10px 0;
+  width: fit-content;
+  pointer-events: auto;
+}
+
+.toastify {
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0077ff, #33ccff);
   color: white;
-  border: none;
-  border-radius: 5px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  position: relative;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+}
+
+.toastify.error {
+  background: linear-gradient(135deg, #ff5252, #ff867f);
+}
+
+.toastify.warning {
+  background: linear-gradient(135deg, #ffc107, #ffecb3);
+}
+
+.toastify.success {
+  background: linear-gradient(135deg, #00c853, #81c784);
+}
+
+.toast-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.modal-content button:hover {
-  background-color: #0056b3;
+  border: none;
+  background: none;
 }
 
-.modal-content button:focus {
-  outline: none;
+.toast-close-btn:hover {
+  color: #ffd700;
 }
 
-@keyframes shake {
+.custom-toast {
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e90ff, #00c6ff);
+  border: 2px solid transparent;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  animation: fadeIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
   0% {
-    transform: translateX(0) scale(1);
-    filter: brightness(1);
-   
-  }
-  25% {
-    transform: translateX(-10px) scale(1.1);
-    filter: brightness(1.2); 
-  }
-  50% {
-    transform: translateX(10px) scale(1);
-    filter: brightness(1.2); 
-  }
-  75% {
-    transform: translateX(-10px) scale(1.1);
-    filter: brightness(1.2); 
+    opacity: 1;
+    transform: translateY(0);
   }
   100% {
-    transform: translateX(0) scale(1);
-    filter: brightness(1); 
+    opacity: 0;
+    transform: translateY(-10px);
   }
 }
-
-.shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-
-
 
 @media (max-width: 768px) {
   input, select, button {
@@ -237,6 +292,6 @@ tr.rank-down {
   }
 
   .modal-content {
-    width: 95%;
+    width: 90%;
   }
 }
